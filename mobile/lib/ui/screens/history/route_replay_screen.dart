@@ -193,7 +193,6 @@ class _RouteReplayScreenState extends State<RouteReplayScreen> {
                         padding: const EdgeInsets.all(18),
                         decoration: BoxDecoration(
                           color: AppColors.surface.withOpacity(0.95),
-                          backdropFilter: const ColorFilter.mode(Colors.transparent, BlendMode.srcOver),
                           borderRadius: BorderRadius.circular(22),
                           border: Border.all(color: AppColors.surfaceBorder),
                           boxShadow: [
