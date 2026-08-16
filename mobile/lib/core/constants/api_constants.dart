@@ -1,7 +1,11 @@
 class ApiConstants {
-  static const String defaultBaseUrl = "http://10.0.2.2:8000/api/v1"; // Android emulator localhost alias
+  // Hosted Production URLs (Railway)
+  static const String defaultBaseUrl = "https://ridetotrack-production.up.railway.app/api/v1";
+  static const String wsBaseUrl = "wss://ridetotrack-production.up.railway.app/api/v1";
+  
+  // Local Development Fallbacks
+  static const String emulatorBaseUrl = "http://10.0.2.2:8000/api/v1";
   static const String localhostBaseUrl = "http://127.0.0.1:8000/api/v1";
-  static const String wsBaseUrl = "ws://10.0.2.2:8000/api/v1";
 
   // Endpoints
   static const String login = "/auth/login";
