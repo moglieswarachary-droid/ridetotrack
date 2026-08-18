@@ -1,23 +1,30 @@
+import os
+import logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-import os
 
 from app.core.config import settings
 from app.core.database import init_db
 from app.core.redis_client import state_store
 from app.api.v1 import api_router
+from app.api.v1.websocket import router as websocket_router
+
+logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
+    logger.info("Initializing RideTrack database schema...")
     await init_db()
+    logger.info("Connecting to Redis state store...")
     await state_store.connect()
     yield
     # Shutdown
+    logger.info("Disconnecting Redis state store...")
     await state_store.disconnect()
 
 
@@ -37,18 +44,21 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
-# CORS configuration - Allow all origins, emulators, and local LAN devices
+# CORS configuration - Allow configured origins (supports "*" wildcard or specific domains)
+allow_all = "*" in settings.CORS_ORIGINS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS,
-    allow_origin_regex=r"^https?://.*",
+    allow_origins=["*"] if allow_all else settings.CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Mount API routers
+# Mount API routers under prefix (e.g., /api/v1)
 app.include_router(api_router, prefix=settings.API_V1_STR)
+
+# Also mount direct WebSocket routes at root /ws for flexible reverse proxy routing
+app.include_router(websocket_router)
 
 
 @app.get("/health", tags=["Health & Readiness"])
@@ -69,9 +79,23 @@ async def readiness_check():
     return {"status": "ready"}
 
 
-# Mount standalone Web Live Viewer static files if folder exists
-viewer_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "web_viewer"))
-if os.path.exists(viewer_dir):
+# Resolve web_viewer static files from multiple candidate deployment paths
+candidate_dirs = [
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "web_viewer")),
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "web_viewer")),
+    os.path.abspath(os.path.join(os.getcwd(), "web_viewer")),
+    "/app/web_viewer",
+    "/app/backend/web_viewer",
+]
+
+viewer_dir = None
+for c in candidate_dirs:
+    if os.path.exists(c) and os.path.exists(os.path.join(c, "index.html")):
+        viewer_dir = c
+        logger.info(f"Web viewer mounted from: {viewer_dir}")
+        break
+
+if viewer_dir and os.path.exists(viewer_dir):
     app.mount("/static", StaticFiles(directory=viewer_dir), name="static")
 
     @app.get("/live/{share_token}", response_class=HTMLResponse, tags=["Live Ride Sharing"])
@@ -81,6 +105,19 @@ if os.path.exists(viewer_dir):
         if os.path.exists(index_file):
             return FileResponse(index_file)
         return HTMLResponse("<h3>RideTrack Live Viewer is initializing...</h3>")
+else:
+    @app.get("/live/{share_token}", response_class=HTMLResponse, tags=["Live Ride Sharing"])
+    async def serve_live_viewer_fallback(share_token: str):
+        """Fallback live viewer page when static assets directory is not found."""
+        return HTMLResponse(
+            f"<!DOCTYPE html><html><head><title>RideTrack • Live Tracker</title>"
+            f"<meta name='viewport' content='width=device-width, initial-scale=1.0'>"
+            f"<style>body{{margin:0;padding:40px;background:#0A0D14;color:#FFF;font-family:sans-serif;text-align:center;}}"
+            f"h1{{color:#00E5FF;}}code{{color:#00E676;background:#121620;padding:4px 8px;border-radius:6px;}}</style></head>"
+            f"<body><h1>RideTrack Live Tracking Feed</h1>"
+            f"<p>Connected to live ride session token: <code>{share_token}</code></p>"
+            f"<p style='color:#8E9BAE;'>Initializing map telemetry display...</p></body></html>"
+        )
 
 
 if __name__ == "__main__":

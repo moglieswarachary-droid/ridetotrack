@@ -38,5 +38,7 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 
 async def init_db():
     """Initialize database tables."""
+    import app.models  # Ensure all model tables are registered in Base.metadata
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+

@@ -1,0 +1,325 @@
+:root {
+  --bg-dark: #0A0D14;
+  --surface-card: rgba(18, 24, 38, 0.85);
+  --surface-border: rgba(255, 255, 255, 0.08);
+  --primary-cyan: #00E5FF;
+  --primary-cyan-glow: rgba(0, 229, 255, 0.35);
+  --accent-amber: #FFB300;
+  --accent-red: #FF3B30;
+  --accent-green: #00E676;
+  --text-main: #FFFFFF;
+  --text-muted: #8E9BAE;
+  --font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.app-header {
+  height: 64px;
+  background: rgba(10, 13, 20, 0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--surface-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 1000;
+}
+
+.brand-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.2), rgba(0, 229, 255, 0.05));
+  border: 1px solid rgba(0, 229, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-cyan);
+}
+
+.brand-text h1 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: -0.3px;
+}
+
+.subtitle {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.badge-live {
+  font-size: 0.65rem;
+  font-weight: 800;
+  background: rgba(255, 59, 48, 0.18);
+  color: var(--accent-red);
+  padding: 2px 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 59, 48, 0.4);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  letter-spacing: 0.5px;
+}
+
+.pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--accent-red);
+  box-shadow: 0 0 8px var(--accent-red);
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.9); opacity: 0.8; }
+  50% { transform: scale(1.4); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.8; }
+}
+
+.status-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--surface-border);
+}
+
+.status-chip.online .status-indicator {
+  background-color: var(--accent-green);
+  box-shadow: 0 0 10px var(--accent-green);
+}
+
+.status-chip.offline .status-indicator {
+  background-color: var(--text-muted);
+}
+
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--accent-amber);
+}
+
+/* Map View */
+.main-container {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 64px);
+}
+
+.map-view {
+  width: 100%;
+  height: 100%;
+  background-color: #121620;
+}
+
+/* Floating Telemetry HUD */
+.telemetry-hud {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(92%, 760px);
+  background: var(--surface-card);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--surface-border);
+  border-radius: 20px;
+  padding: 16px 20px;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+}
+
+.speed-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-right: 18px;
+  border-right: 1px solid var(--surface-border);
+}
+
+.hud-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--primary-cyan);
+  letter-spacing: 1px;
+  margin-bottom: 2px;
+}
+
+.speed-display {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.speed-value {
+  font-family: var(--font-mono);
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  line-height: 1;
+}
+
+.speed-unit {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.speed-bar-container {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+
+.speed-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-cyan), var(--accent-amber));
+  transition: width 0.3s ease;
+}
+
+.hud-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 16px;
+}
+
+.metric-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.metric-icon {
+  color: var(--primary-cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.metric-data {
+  display: flex;
+  flex-direction: column;
+}
+
+.metric-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.metric-val {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.metric-val small {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Floating Controls */
+.map-controls {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 1000;
+}
+
+.map-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: var(--surface-card);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--surface-border);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s ease;
+}
+
+.map-btn:hover {
+  background: rgba(0, 229, 255, 0.15);
+  border-color: var(--primary-cyan);
+  color: var(--primary-cyan);
+}
+
+.map-btn.active {
+  background: var(--primary-cyan);
+  color: #0A0D14;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .telemetry-hud {
+    grid-template-columns: 1fr;
+    bottom: 12px;
+    padding: 14px;
+    gap: 12px;
+  }
+  .speed-card {
+    border-right: none;
+    border-bottom: 1px solid var(--surface-border);
+    padding-right: 0;
+    padding-bottom: 10px;
+  }
+  .speed-value {
+    font-size: 2.2rem;
+  }
+  .hud-metrics-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+}
