@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/network/api_client.dart';
 import '../../../core/storage/local_storage.dart';
 import '../../../providers/auth_provider.dart';
+import '../../widgets/server_config_dialog.dart';
 import '../auth/login_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -81,6 +83,60 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                 ],
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Server & Network Connectivity
+            const Text("BACKEND & SERVER NETWORK", style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: AppColors.textSecondary, letterSpacing: 0.8)),
+            const SizedBox(height: 10),
+
+            InkWell(
+              onTap: () async {
+                await ServerConfigDialog.show(context);
+                setState(() {});
+              },
+              borderRadius: BorderRadius.circular(16),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.surface,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: AppColors.surfaceBorder),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryCyan.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Icon(Icons.dns_rounded, color: AppColors.primaryCyan, size: 20),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text("API & WebSocket Endpoint", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
+                          const SizedBox(height: 2),
+                          Text(
+                            ApiClient.baseUrl,
+                            style: const TextStyle(
+                              fontFamily: 'JetBrains Mono',
+                              fontSize: 11,
+                              color: AppColors.textSecondary,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(Icons.arrow_forward_ios_rounded, color: AppColors.textSecondary, size: 14),
+                  ],
+                ),
               ),
             ),
 

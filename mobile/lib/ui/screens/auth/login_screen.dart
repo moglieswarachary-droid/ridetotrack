@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../providers/auth_provider.dart';
+import '../../widgets/server_config_dialog.dart';
 import 'register_screen.dart';
 import '../onboarding/permission_onboarding_screen.dart';
 
@@ -63,38 +64,48 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
 
-              // Logo & App Name
+              // Logo & App Name with Server Connection Button
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryCyan.withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: AppColors.primaryCyan.withOpacity(0.4)),
-                    ),
-                    child: const Icon(
-                      Icons.two_wheeler_rounded,
-                      color: AppColors.primaryCyan,
-                      size: 26,
-                    ),
+                  Row(
+                    children: [
+                      Container(
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryCyan.withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppColors.primaryCyan.withOpacity(0.4)),
+                        ),
+                        child: const Icon(
+                          Icons.two_wheeler_rounded,
+                          color: AppColors.primaryCyan,
+                          size: 26,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      const Text(
+                        "RideTrack",
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 12),
-                  const Text(
-                    "RideTrack",
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary,
-                    ),
+                  IconButton(
+                    icon: const Icon(Icons.settings_ethernet_rounded, color: AppColors.primaryCyan),
+                    tooltip: "Configure Server IP / Host",
+                    onPressed: () => ServerConfigDialog.show(context),
                   ),
                 ],
               ),
 
-              const SizedBox(height: 36),
+              const SizedBox(height: 32),
 
               const Text(
                 "Welcome back,\nRider.",

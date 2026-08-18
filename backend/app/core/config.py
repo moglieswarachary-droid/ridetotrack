@@ -27,15 +27,21 @@ class Settings(BaseSettings):
     REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
     USE_REDIS_FALLBACK: bool = True
     
+    # Server Host & Port
+    HOST: str = os.getenv("HOST", "0.0.0.0")
+    PORT: int = int(os.getenv("PORT", "8000"))
+    
     # CORS
     CORS_ORIGINS: List[str] = [
+        "*",
         "http://localhost",
         "http://localhost:3000",
         "http://localhost:8000",
         "http://localhost:8080",
         "http://127.0.0.1:8000",
         "http://127.0.0.1:3000",
-        "*"
+        "http://10.0.2.2:8000",
+        "https://ridetotrack-production.up.railway.app",
     ]
     
     # Tracking & GPS Filtering Parameters
@@ -52,4 +58,3 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
-

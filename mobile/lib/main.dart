@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'core/network/api_client.dart';
 import 'core/theme/app_theme.dart';
 import 'providers/auth_provider.dart';
 import 'providers/bike_provider.dart';
@@ -12,6 +13,9 @@ import 'ui/screens/dashboard/dashboard_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize network configuration & load saved server endpoint
+  await ApiClient.initialize();
 
   // Set immersive dark system UI overlay
   SystemChrome.setSystemUIOverlayStyle(

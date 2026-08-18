@@ -37,10 +37,11 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
-# CORS configuration
+# CORS configuration - Allow all origins, emulators, and local LAN devices
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.CORS_ORIGINS,
+    allow_origin_regex=r"^https?://.*",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -80,3 +81,8 @@ if os.path.exists(viewer_dir):
         if os.path.exists(index_file):
             return FileResponse(index_file)
         return HTMLResponse("<h3>RideTrack Live Viewer is initializing...</h3>")
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("app.main:app", host=settings.HOST, port=settings.PORT, reload=True)

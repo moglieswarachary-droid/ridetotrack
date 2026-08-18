@@ -6,6 +6,7 @@ class LocalStorage {
   static const String _userKey = "ridetrack_user_data";
   static const String _unitSystemKey = "ridetrack_unit_system";
   static const String _trackingQualityKey = "ridetrack_tracking_quality";
+  static const String _serverBaseUrlKey = "ridetrack_server_base_url";
 
   static Future<void> saveTokens(String accessToken, String refreshToken) async {
     final prefs = await SharedPreferences.getInstance();
@@ -38,5 +39,21 @@ class LocalStorage {
   static Future<String> getTrackingQuality() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_trackingQualityKey) ?? "balanced";
+  }
+
+  static Future<void> setServerBaseUrl(String url) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_serverBaseUrlKey, url.trim());
+  }
+
+  static Future<String?> getServerBaseUrl() async {
+    final prefs = await SharedPreferences.getInstance();
+    final url = prefs.getString(_serverBaseUrlKey);
+    return (url != null && url.trim().isNotEmpty) ? url.trim() : null;
+  }
+
+  static Future<void> clearServerBaseUrl() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_serverBaseUrlKey);
   }
 }
